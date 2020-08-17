@@ -18,6 +18,9 @@
 		2DCD954D1E0B4F2C00145EB5 /* YourAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* YourAppTests.m */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		FC1198E393D5928E23014BD6 /* libPods-YourApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 513C8736706C6D19EF821D57 /* libPods-YourApp.a */; };
+		EDD362C493E34603B0F63911 /* SFProText-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = A0DA138977C84CFB93C860FE /* SFProText-Bold.otf */; };
+		7822A88A4B254ADAB129C344 /* SFProText-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 67BA62AD75EA40078F62910C /* SFProText-Regular.otf */; };
+		BE62A66C87F44868BE6BCDDA /* SFProText-Semibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 49EE626D7EDB4E39BD4BD6E5 /* SFProText-Semibold.otf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +62,9 @@
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 		ED520687856C1EE5E7B46CDC /* libPods-YourApp-YourAppTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-YourApp-YourAppTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A0DA138977C84CFB93C860FE /* SFProText-Bold.otf */ = {isa = PBXFileReference; name = "SFProText-Bold.otf"; path = "../src/assets/fonts/SFProText-Bold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		67BA62AD75EA40078F62910C /* SFProText-Regular.otf */ = {isa = PBXFileReference; name = "SFProText-Regular.otf"; path = "../src/assets/fonts/SFProText-Regular.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		49EE626D7EDB4E39BD4BD6E5 /* SFProText-Semibold.otf */ = {isa = PBXFileReference; name = "SFProText-Semibold.otf"; path = "../src/assets/fonts/SFProText-Semibold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,8 +151,17 @@
 				C803C0C561CE0D9B315CB93E /* Pods-YourApp-YourAppTests.debug.xcconfig */,
 				2D054B1AB79488B95690A35D /* Pods-YourApp-YourAppTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		43F2D0EAD83345BDA7A77F4D /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				A0DA138977C84CFB93C860FE /* SFProText-Bold.otf */,
+				67BA62AD75EA40078F62910C /* SFProText-Regular.otf */,
+				49EE626D7EDB4E39BD4BD6E5 /* SFProText-Semibold.otf */,
+			);
+			name = Resources;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -165,6 +180,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				439B418C5C3409EEB8B42910 /* Pods */,
+				43F2D0EAD83345BDA7A77F4D /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -324,6 +340,9 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				EDD362C493E34603B0F63911 /* SFProText-Bold.otf in Resources */,
+				7822A88A4B254ADAB129C344 /* SFProText-Regular.otf in Resources */,
+				BE62A66C87F44868BE6BCDDA /* SFProText-Semibold.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
