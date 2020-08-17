@@ -1,6 +1,7 @@
 # YourApp
+
 Learn React Native
 
-Reference
+### Reference
 
-custom fonts - https://medium.com/@mehrankhandev/ultimate-guide-to-use-custom-fonts-in-react-native-77fcdf859cf4
+[Custom Fonts](https://medium.com/@mehrankhandev/ultimate-guide-to-use-custom-fonts-in-react-native-77fcdf859cf4)
