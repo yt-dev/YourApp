@@ -1,9 +1,10 @@
 import React, {useRef} from 'react';
-import {View, StyleSheet, useWindowDimensions} from 'react-native';
-import Animated, {multiply} from 'react-native-reanimated';
-import {useValue, onScrollEvent, interpolateColor} from 'react-native-redash';
+import {View, StyleSheet, Dimensions} from 'react-native';
+import Animated, {multiply, divide} from 'react-native-reanimated';
+import {interpolateColor, useScrollHandler} from 'react-native-redash';
 import Slide, {SLIDE_HEIGHT} from './Slide';
 import SubSlide from './SubSlide';
+import Dot from './Dot';
 
 const slides = [
   {
@@ -37,17 +38,13 @@ const slides = [
 ];
 
 const BORDER_RADIUS = 75;
+const {width} = Dimensions.get('window');
 
 interface OnboardingProps {}
 
 const Onboarding: React.FC<OnboardingProps> = ({}) => {
-  const {width} = useWindowDimensions();
-
   const scroll = useRef<Animated.ScrollView>(null);
-
-  const x = useValue(0);
-  // TODO: scrollHandler useScrollHandler?
-  const onScroll = onScrollEvent({x});
+  const {x, scrollHandler} = useScrollHandler();
   const backgroundColor = interpolateColor(x, {
     inputRange: slides.map((_, i) => i * width),
     outputRange: slides.map((slide, _) => slide.color),
@@ -63,8 +60,7 @@ const Onboarding: React.FC<OnboardingProps> = ({}) => {
           decelerationRate="fast"
           showsHorizontalScrollIndicator={false}
           bounces={false}
-          scrollEventThrottle={1}
-          {...{onScroll}}>
+          {...scrollHandler}>
           {slides.map(({title}, index) => (
             <Slide key={index} right={Boolean(index % 2)} {...{title}} />
           ))}
@@ -74,27 +70,34 @@ const Onboarding: React.FC<OnboardingProps> = ({}) => {
         <Animated.View
           style={{...StyleSheet.absoluteFillObject, backgroundColor}}
         />
-        <Animated.View
-          style={{
-            ...styles.footerZStack2,
-            width: width * slides.length,
-            transform: [{translateX: multiply(x, -1)}],
-          }}>
-          {slides.map(({subtitle, description}, index) => (
-            <SubSlide
-              key={index}
-              {...{subtitle, description}}
-              last={index === slides.length - 1}
-              onPress={() => {
-                if (scroll.current) {
-                  scroll.current
-                    .getNode()
-                    .scrollTo({x: width * (index + 1), animated: true});
-                }
-              }}
-            />
-          ))}
-        </Animated.View>
+        <View style={styles.footerContent}>
+          <View style={styles.pagintion}>
+            {slides.map((_, index) => (
+              <Dot key={index} currentIndex={divide(x, width)} {...{index}} />
+            ))}
+          </View>
+          <Animated.View
+            style={{
+              flexDirection: 'row',
+              width: width * slides.length,
+              transform: [{translateX: multiply(x, -1)}],
+            }}>
+            {slides.map(({subtitle, description}, index) => (
+              <SubSlide
+                key={index}
+                {...{subtitle, description}}
+                last={index === slides.length - 1}
+                onPress={() => {
+                  if (scroll.current) {
+                    scroll.current
+                      .getNode()
+                      .scrollTo({x: width * (index + 1), animated: true});
+                  }
+                }}
+              />
+            ))}
+          </Animated.View>
+        </View>
       </View>
     </View>
   );
@@ -112,11 +115,18 @@ const styles = StyleSheet.create({
   footer: {
     flex: 1,
   },
-  footerZStack2: {
+  footerContent: {
     flex: 1,
     flexDirection: 'row',
     backgroundColor: 'white',
     borderTopLeftRadius: BORDER_RADIUS,
+  },
+  pagintion: {
+    ...StyleSheet.absoluteFillObject,
+    height: BORDER_RADIUS,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
   },
 });
 
