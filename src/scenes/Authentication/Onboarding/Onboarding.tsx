@@ -13,6 +13,7 @@ const slides = [
     description:
       'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod',
     color: '#BFEAF5',
+    picture: null,
   },
   {
     title: '🎃 Sword Art Online',
@@ -20,6 +21,7 @@ const slides = [
     description:
       'quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo',
     color: '#BEECC4',
+    picture: null,
   },
   {
     title: '😘 うたわれるもの',
@@ -27,6 +29,7 @@ const slides = [
     description:
       'consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse',
     color: '#FFE4D9',
+    picture: null,
   },
   {
     title: '👻 天空の城',
@@ -34,6 +37,7 @@ const slides = [
     description:
       'cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non',
     color: '#FFDDDD',
+    picture: null,
   },
 ];
 
@@ -61,27 +65,31 @@ const Onboarding: React.FC<OnboardingProps> = ({}) => {
           showsHorizontalScrollIndicator={false}
           bounces={false}
           {...scrollHandler}>
-          {slides.map(({title}, index) => (
-            <Slide key={index} right={Boolean(index % 2)} {...{title}} />
+          {slides.map(({title, picture}, index) => (
+            <Slide
+              key={index}
+              right={Boolean(index % 2)}
+              {...{title, picture}}
+            />
           ))}
         </Animated.ScrollView>
       </Animated.View>
       <View style={styles.footer}>
-        <Animated.View
-          style={{...StyleSheet.absoluteFillObject, backgroundColor}}
-        />
-        <View style={styles.footerContent}>
+        <Animated.View style={[styles.footerZStack0, {backgroundColor}]} />
+        <View style={styles.footerZStack1}>
           <View style={styles.pagintion}>
             {slides.map((_, index) => (
               <Dot key={index} currentIndex={divide(x, width)} {...{index}} />
             ))}
           </View>
           <Animated.View
-            style={{
-              flexDirection: 'row',
-              width: width * slides.length,
-              transform: [{translateX: multiply(x, -1)}],
-            }}>
+            style={[
+              styles.footerContent,
+              {
+                width: width * slides.length,
+                transform: [{translateX: multiply(x, -1)}],
+              },
+            ]}>
             {slides.map(({subtitle, description}, index) => (
               <SubSlide
                 key={index}
@@ -115,9 +123,12 @@ const styles = StyleSheet.create({
   footer: {
     flex: 1,
   },
-  footerContent: {
+  footerZStack0: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 0,
+  },
+  footerZStack1: {
     flex: 1,
-    flexDirection: 'row',
     backgroundColor: 'white',
     borderTopLeftRadius: BORDER_RADIUS,
   },
@@ -127,6 +138,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
+  },
+  footerContent: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });
 
