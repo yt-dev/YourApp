@@ -119,6 +119,7 @@ const styles = StyleSheet.create({
   slider: {
     borderBottomRightRadius: BORDER_RADIUS,
     height: SLIDE_HEIGHT,
+    overflow: 'hidden',
   },
   footer: {
     flex: 1,
