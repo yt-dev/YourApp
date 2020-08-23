@@ -1,8 +1,7 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-
-import Onboarding from './scenes/Authentication/Onboarding/Onboarding';
+import {Onboarding} from './scenes/Authentication/Onboarding';
 
 type AuthenticationStackParamList = {
   Onboarding: undefined;
