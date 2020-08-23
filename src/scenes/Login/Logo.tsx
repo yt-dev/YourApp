@@ -9,7 +9,7 @@ interface LogoProps {
 const Logo: React.FC<LogoProps> = ({scale}) => {
   return (
     <Animated.View style={{...styles.logo, transform: [{scale}]}}>
-      <Text style={styles.text}>Logo</Text>
+      <Text style={styles.text}>🌦</Text>
     </Animated.View>
   );
 };
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   text: {
-    fontSize: 33,
+    fontSize: 50,
     fontFamily: 'SFProText-Bold',
     textAlign: 'center',
   },
