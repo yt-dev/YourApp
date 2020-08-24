@@ -7,6 +7,7 @@ import Animated, {
   eq,
   interpolate,
   not,
+  SpringUtils,
 } from 'react-native-reanimated';
 import {
   withTimingTransition,
@@ -19,8 +20,9 @@ import {
   TapGestureHandler,
   State,
 } from 'react-native-gesture-handler';
+import OverlayBg from './OverlayBg';
 
-const {height: SCREEN_HEIGHT, width: SCREEN_WIDTH} = Dimensions.get('window');
+const {height: SCREEN_HEIGHT} = Dimensions.get('window');
 
 const TEXT_INPUT_HEIGHT = 150;
 const FOOTER_HEIGHT = 70;
@@ -32,34 +34,29 @@ interface LoginProps {}
 const Login: React.FC<LoginProps> = ({}) => {
   const {gestureHandler, state} = useTapGestureHandler();
 
-  const scale = new Animated.Value(0);
-  const scaleAnimation = withTimingTransition(scale, {duration: 400});
-
-  const isOpen = useRef(new Animated.Value(0));
-  const isopenAnimation = withSpringTransition(isOpen.current);
-
+  const scale = useRef(new Animated.Value(0));
+  const scaleAnimation = withTimingTransition(scale.current, {duration: 400});
   const innerLoginY = interpolate(scaleAnimation, {
     inputRange: [0, 1],
     outputRange: [LOGIN_VIEW_HEIGHT, 0],
   });
 
+  const isOpen = useRef(new Animated.Value(0));
+  const isopenAnimation = withSpringTransition(isOpen.current, {
+    ...SpringUtils.makeDefaultConfig(),
+    overshootClamping: true,
+    damping: new Animated.Value(20),
+  });
   const outerLoginY = interpolate(isopenAnimation, {
     inputRange: [0, 1],
-    outputRange: [SCREEN_HEIGHT - LOGIN_VIEW_HEIGHT, 0],
+    outputRange: [SCREEN_HEIGHT - LOGIN_VIEW_HEIGHT, LOGIN_VIEW_HEIGHT / 2],
   });
 
-  // useCode(
-  //   () =>
-  //     cond(eq(state, State.END), [
-  //       cond(eq(isOpen.current, 0), set(isOpen.current, 1)),
-  //     ]),
-  //   [],
-  // );
   useCode(
     () => cond(eq(state, State.END), set(isOpen.current, not(isOpen.current))),
-    [],
+    [state, isOpen],
   );
-  useCode(() => cond(eq(scale, 0), set(scale, 1)), []);
+  useCode(() => cond(eq(scale.current, 0), set(scale.current, 1)), []);
 
   return (
     <View style={styles.container}>
@@ -69,9 +66,7 @@ const Login: React.FC<LoginProps> = ({}) => {
 
       <Animated.View
         style={[styles.panel, {transform: [{translateY: outerLoginY}]}]}>
-        <Animated.View style={styles.overlayBg}>
-          <Text>Overlay Bg</Text>
-        </Animated.View>
+        <OverlayBg {...{isopenAnimation}} />
 
         <Animated.View>
           <Animated.View
@@ -119,16 +114,6 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'white',
     height: SCREEN_HEIGHT,
-  },
-  overlayBg: {
-    height: LOGIN_VIEW_HEIGHT,
-    backgroundColor: '#2289d6',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    left: 0,
   },
   loginView: {
     height: LOGIN_VIEW_HEIGHT,
