@@ -23,7 +23,7 @@ const OverlayBg: React.FC<OverlayBgProps> = ({isopenAnimation}) => {
   });
 
   const backgroundColor = interpolateColor(isopenAnimation, {
-    inputRange: [0, 0.5, 1],
+    inputRange: [0, 0.1, 1],
     outputRange: ['#2289d6', '#fff', '#fff'],
   });
 

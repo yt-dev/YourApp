@@ -21,6 +21,8 @@ import {
   State,
 } from 'react-native-gesture-handler';
 import OverlayBg from './OverlayBg';
+import HeaderBackArrow from './HeaderBackArrow';
+import AnimatedPlaceholder from './AnimatedPlaceholder';
 
 const {height: SCREEN_HEIGHT} = Dimensions.get('window');
 
@@ -33,6 +35,10 @@ interface LoginProps {}
 
 const Login: React.FC<LoginProps> = ({}) => {
   const {gestureHandler, state} = useTapGestureHandler();
+  const {
+    gestureHandler: backGestureHandler,
+    state: backGestureState,
+  } = useTapGestureHandler();
 
   const scale = useRef(new Animated.Value(0));
   const scaleAnimation = withTimingTransition(scale.current, {duration: 400});
@@ -52,17 +58,40 @@ const Login: React.FC<LoginProps> = ({}) => {
     outputRange: [SCREEN_HEIGHT - LOGIN_VIEW_HEIGHT, LOGIN_VIEW_HEIGHT / 2],
   });
 
+  const headingOpacity = interpolate(isopenAnimation, {
+    inputRange: [0, 1],
+    outputRange: [1, 0],
+  });
+
   useCode(
-    () => cond(eq(state, State.END), set(isOpen.current, not(isOpen.current))),
-    [state, isOpen],
+    () =>
+      cond(eq(state, State.END), [
+        cond(eq(isOpen.current, 0), set(isOpen.current, 1)),
+      ]),
+    [state],
   );
+
   useCode(() => cond(eq(scale.current, 0), set(scale.current, 1)), []);
+
+  useCode(
+    () =>
+      cond(eq(backGestureState, State.END), [
+        set(state, State.UNDETERMINED),
+        set(isOpen.current, 0),
+      ]),
+    [backGestureState],
+  );
 
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
         <Logo scale={scaleAnimation} />
       </View>
+
+      <HeaderBackArrow
+        {...{isopenAnimation}}
+        gestureHandler={backGestureHandler}
+      />
 
       <Animated.View
         style={[styles.panel, {transform: [{translateY: outerLoginY}]}]}>
@@ -74,7 +103,7 @@ const Login: React.FC<LoginProps> = ({}) => {
               styles.loginView,
               {transform: [{translateY: innerLoginY}]},
             ]}>
-            <Animated.View style={styles.heading}>
+            <Animated.View style={{...styles.heading, opacity: headingOpacity}}>
               <Text style={styles.text}>天気</Text>
             </Animated.View>
 
@@ -83,6 +112,7 @@ const Login: React.FC<LoginProps> = ({}) => {
                 <Animated.View
                   style={styles.inputContainer}
                   pointerEvents="none">
+                  <AnimatedPlaceholder {...{isopenAnimation}} />
                   <Text style={styles.text}>👻</Text>
                   <Text style={[styles.text, styles.prefix]}>+12</Text>
                   <TextInput
