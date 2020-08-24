@@ -1,18 +1,26 @@
-import React, {useRef} from 'react';
-import {StyleSheet, View, Dimensions, Text} from 'react-native';
+import React, {useRef, useEffect} from 'react';
+import {
+  StyleSheet,
+  View,
+  Dimensions,
+  Text,
+  Keyboard,
+  Easing,
+} from 'react-native';
 import Animated, {
   useCode,
   cond,
   set,
   eq,
   interpolate,
-  not,
   SpringUtils,
+  call,
 } from 'react-native-reanimated';
 import {
   withTimingTransition,
   useTapGestureHandler,
   withSpringTransition,
+  delay,
 } from 'react-native-redash';
 import Logo from './Logo';
 import {
@@ -23,6 +31,7 @@ import {
 import OverlayBg from './OverlayBg';
 import HeaderBackArrow from './HeaderBackArrow';
 import AnimatedPlaceholder from './AnimatedPlaceholder';
+import ForwardArrow from './ForwardArrow';
 
 const {height: SCREEN_HEIGHT} = Dimensions.get('window');
 
@@ -39,6 +48,18 @@ const Login: React.FC<LoginProps> = ({}) => {
     gestureHandler: backGestureHandler,
     state: backGestureState,
   } = useTapGestureHandler();
+
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    Keyboard.addListener('keyboardDidShow', keyboardDidShow);
+    Keyboard.addListener('keyboardDidHide', keyboardDidHide);
+
+    return () => {
+      Keyboard.removeListener('keyboardDidShow', () => {});
+      Keyboard.removeListener('keyboardDidHide', () => {});
+    };
+  });
 
   const scale = useRef(new Animated.Value(0));
   const scaleAnimation = withTimingTransition(scale.current, {duration: 400});
@@ -63,24 +84,58 @@ const Login: React.FC<LoginProps> = ({}) => {
     outputRange: [1, 0],
   });
 
+  const focusInput = () => {
+    if (inputRef.current !== null) {
+      inputRef.current.focus();
+    }
+  };
+
   useCode(
     () =>
       cond(eq(state, State.END), [
-        cond(eq(isOpen.current, 0), set(isOpen.current, 1)),
+        cond(eq(isOpen.current, 0), [set(isOpen.current, 1)]),
+        cond(eq(isOpen.current, 1), delay(call([], focusInput), 700)),
       ]),
     [state],
   );
 
   useCode(() => cond(eq(scale.current, 0), set(scale.current, 1)), []);
 
+  const blurInput = () => {
+    if (inputRef.current !== null) {
+      inputRef.current.blur();
+    }
+  };
+
   useCode(
-    () =>
+    () => [
       cond(eq(backGestureState, State.END), [
         set(state, State.UNDETERMINED),
-        set(isOpen.current, 0),
+        call([], blurInput),
+        delay(set(isOpen.current, 0), 200),
       ]),
+    ],
     [backGestureState],
   );
+
+  const keyboardHeight = new Animated.Value(0);
+
+  const keyboardDidShow = (e) => {
+    let toValue = -e.endCoordinates.height;
+
+    Animated.timing(keyboardHeight, {
+      toValue,
+      duration: 200,
+      easing: Easing.linear,
+    }).start();
+  };
+  const keyboardDidHide = (e) => {
+    Animated.timing(keyboardHeight, {
+      toValue: 0,
+      duration: 200,
+      easing: Easing.linear,
+    }).start();
+  };
 
   return (
     <View style={styles.container}>
@@ -96,6 +151,7 @@ const Login: React.FC<LoginProps> = ({}) => {
       <Animated.View
         style={[styles.panel, {transform: [{translateY: outerLoginY}]}]}>
         <OverlayBg {...{isopenAnimation}} />
+        <ForwardArrow {...{keyboardHeight}} />
 
         <Animated.View>
           <Animated.View
@@ -116,6 +172,7 @@ const Login: React.FC<LoginProps> = ({}) => {
                   <Text style={styles.text}>👻</Text>
                   <Text style={[styles.text, styles.prefix]}>+12</Text>
                   <TextInput
+                    ref={inputRef}
                     placeholder="Enter something"
                     style={styles.input}
                     keyboardType="number-pad"
